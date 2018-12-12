@@ -12,36 +12,42 @@ public class Main {
 	static int d;
 	static String encryptMessage = "";
 	static String decryptMessage = "";
+	static int hackN = 96091;
+	static int hackE = 113;
+	static String hackMessage = "61768, 80113, 95437, 80113, 53070, 75177, 82879";
 	
 	public static void main(String[] args) {
 
-		p = generate(30, 70);
-		q = generate(70, 120);
-		N = p * q;
-		fN = (p - 1) * (q - 1);
+//		p = generate(30, 70);
+//		q = generate(70, 120);
+//		N = p * q;
+//		fN = (p - 1) * (q - 1);
+//		
+//		boolean eBool = false;
+//		
+//		do {
+//			e = generate(70, N);
+//			if (e != p && e != q && fN % e != 0)
+//				eBool = true;
+//		}while(eBool != true);
+//		
+//		advancedEuclideanAlgorithm(fN, e);
+//		
+//		System.out.println("p = " + p);
+//		System.out.println("q = " + q);
+//		System.out.println("N = " + N);
+//		System.out.println("fN = " + fN);
+//		System.out.println("e = " + e);
+//		System.out.println("d = " + d);
+//		N = 4747;
+//		e = 3889;
+//		d = 3209;
+//		
+//		encrypt("Привет");
+//		decrypt(encryptMessage);
 		
-		boolean eBool = false;
+		hack();
 		
-		do {
-			e = generate(70, N);
-			if (e != p && e != q && fN % e != 0)
-				eBool = true;
-		}while(eBool != true);
-		
-		advancedEuclideanAlgorithm(fN, e);
-		
-		System.out.println("p = " + p);
-		System.out.println("q = " + q);
-		System.out.println("N = " + N);
-		System.out.println("fN = " + fN);
-		System.out.println("e = " + e);
-		System.out.println("d = " + d);
-		N = 4747;
-		e = 3889;
-		d = 3209;
-		
-		encrypt("Привет");
-		decrypt(encryptMessage);
 
 	}
 	
@@ -152,5 +158,43 @@ public class Main {
 	private static char decryptChar(String letter) {
 		System.out.print(pows(Integer.parseInt(letter), d, N) + ";");
 		return (char)pows(Integer.parseInt(letter), d, N);
+	}
+	
+	private static void hack() {
+		int size = (int) Math.sqrt(Math.sqrt(hackN));
+		int gcd = 0;
+		int expN = 0;
+		int[] xi = new int[size];
+		int[] xj = new int[size];
+		int[] xixj = new int[size];
+		
+		xi[0] = 2;
+		xj[0] = 1;
+		xixj[0] = xi[0] - xj[0];
+		expN = xi[0];
+		
+		
+		for (int i = 1; i < size; i++) {
+			xi[i] = xi[i-1]^2 - 1 % hackN;
+			if (i+1 % 2 ==0) {
+				xj[i] = xi[i];
+			}
+			else {
+				xj[i] = xj[i-1];
+			}
+			//System.out.print(xi[i-1] + ";");
+		}
+		System.out.println("xi:");
+		for(int i = 0; i < size; i++) {
+			System.out.print(xi[i]+";");
+		}
+		System.out.println("\nxj:");
+		for(int i = 0; i < size; i++) {
+			System.out.print(xj[i]+";");
+		}
+	}
+	private static int returnExp2() {
+		
+		return 0;
 	}
 }
