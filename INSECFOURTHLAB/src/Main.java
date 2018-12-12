@@ -42,7 +42,6 @@ public class Main {
 		
 		encrypt("Привет");
 		decrypt(encryptMessage);
-		//System.out.println(decryptMessage);
 
 	}
 	
@@ -130,37 +129,28 @@ public class Main {
 	
 	private static void encrypt(String message) {
 		char[] messageChars = message.toCharArray();
-		System.out.print("Non-ecrypt message: ");
+		System.out.println("Non-ecrypted message:");
 		for (char letter : messageChars) {
 			encryptMessage += encryptChar(letter) + ";";
 		}
-		System.out.println("");
-		System.out.println("Encrypt message: " + encryptMessage);
+		System.out.println("\nEcrypted message:\n" + encryptMessage);
 	}
 	
-	private static int encryptChar(char letter) {
-		int result = letter;
-//		for (int i = 0; i < e - 1; i++) {
-//			result = result * letter;
-//			result = result % N;
-//		}
-		result = (result^e) % N;
+	private static long encryptChar(char letter) {
 		System.out.print((int) letter + ";");
-		return result;
+		return pows(letter, e, N);
 	}
 	
 	private static void decrypt(String message) {
 		String[] messageChars = message.split(";");
+		System.out.println("Decrypted message:");
 		for (String letter : messageChars) {
 			decryptMessage += decryptChar(letter);
 		}
 	}
 	
-	private static int decryptChar(String letter) {
-		char result;
-		int character = Integer.parseInt(letter);
-		result = (char) ((character^d) % N);
-		System.out.println();
-		return character;
+	private static char decryptChar(String letter) {
+		System.out.print(pows(Integer.parseInt(letter), d, N) + ";");
+		return (char)pows(Integer.parseInt(letter), d, N);
 	}
 }
