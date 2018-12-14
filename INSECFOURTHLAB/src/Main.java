@@ -15,6 +15,7 @@ public class Main {
 	static int hackN = 96091;
 	static int hackE = 113;
 	static String hackMessage = "61768, 80113, 95437, 80113, 53070, 75177, 82879";
+	static String hackedMessage = "";
 	
 	public static void main(String[] args) {
 
@@ -161,40 +162,63 @@ public class Main {
 	}
 	
 	private static void hack() {
-		int size = (int) Math.sqrt(Math.sqrt(hackN));
-		int gcd = 0;
-		int expN = 0;
+		int size = 100;//(int) Math.sqrt(Math.sqrt(hackN));
+		int newxj = 0;
+		int dividerN = 1;
+		
 		int[] xi = new int[size];
 		int[] xj = new int[size];
 		int[] xixj = new int[size];
+		int[] gcd = new int[size];
 		
 		xi[0] = 2;
 		xj[0] = 1;
 		xixj[0] = xi[0] - xj[0];
-		expN = xi[0];
+		gcd[0] = 1;
+		newxj = xi[0];
 		
 		
 		for (int i = 1; i < size; i++) {
-			xi[i] = xi[i-1]^2 - 1 % hackN;
-			if (i+1 % 2 ==0) {
-				xj[i] = xi[i];
+			xi[i] = (xi[i-1]^2) - 1 % hackN;
+			xj[i] = newxj;
+			xixj[i] = Math.abs(xi[i] - xj[i]);
+			gcd[i] = gcd(xixj[i], hackN);
+			
+			System.out.printf("xi = %d; xj = %d; xi - xj = %d, NOD = %d\n", xi[i], xj[i], xixj[i], gcd[i]);
+			
+			if (gcd[i] > 1) {
+				dividerN = gcd[i];
+				break;
 			}
-			else {
-				xj[i] = xj[i-1];
-			}
-			//System.out.print(xi[i-1] + ";");
+			
+			if (returnExp2(i + 1))
+				newxj = xi[i];
+			
 		}
-		System.out.println("xi:");
-		for(int i = 0; i < size; i++) {
-			System.out.print(xi[i]+";");
-		}
-		System.out.println("\nxj:");
-		for(int i = 0; i < size; i++) {
-			System.out.print(xj[i]+";");
-		}
-	}
-	private static int returnExp2() {
 		
-		return 0;
+//		p = hackN / dividerN;
+//		fN = (int) ((p - 1) * (dividerN - 1));
+//		advancedEuclideanAlgorithm(fN, hackE);
+//		
+//		String[] letters = hackMessage.split(", ");
+//		
+//		for(String letter : letters) {
+//			int character = pows(Integer.parseInt(letter), d, hackN);
+//			hackedMessage += String.valueOf(character) + ";";
+//		}
+//		
+//		System.out.println(hackedMessage);
+		
+		
+	}
+	private static boolean returnExp2(int exp) {
+		boolean ext2 = true;
+		while(exp > 1){
+			if (exp / 2 != 0)
+				ext2 = false;
+			exp = (int)(exp / 2);
+			
+		}
+		return ext2;
 	}
 }
