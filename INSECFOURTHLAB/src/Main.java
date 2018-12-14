@@ -19,33 +19,33 @@ public class Main {
 	
 	public static void main(String[] args) {
 
-//		p = generate(30, 70);
-//		q = generate(70, 120);
-//		N = p * q;
-//		fN = (p - 1) * (q - 1);
-//		
-//		boolean eBool = false;
-//		
-//		do {
-//			e = generate(70, N);
-//			if (e != p && e != q && fN % e != 0)
-//				eBool = true;
-//		}while(eBool != true);
-//		
-//		advancedEuclideanAlgorithm(fN, e);
-//		
-//		System.out.println("p = " + p);
-//		System.out.println("q = " + q);
-//		System.out.println("N = " + N);
-//		System.out.println("fN = " + fN);
-//		System.out.println("e = " + e);
-//		System.out.println("d = " + d);
-//		N = 4747;
-//		e = 3889;
-//		d = 3209;
-//		
-//		encrypt("Привет");
-//		decrypt(encryptMessage);
+		p = generate(30, 70);
+		q = generate(70, 120);
+		N = p * q;
+		fN = (p - 1) * (q - 1);
+		
+		boolean eBool = false;
+		
+		do {
+			e = generate(70, N);
+			if (e != p && e != q && fN % e != 0)
+				eBool = true;
+		}while(eBool != true);
+		
+		advancedEuclideanAlgorithm(fN, e);
+		
+		System.out.println("p = " + p);
+		System.out.println("q = " + q);
+		System.out.println("N = " + N);
+		System.out.println("fN = " + fN);
+		System.out.println("e = " + e);
+		System.out.println("d = " + d);
+		N = 4747;
+		e = 3889;
+		d = 3209;
+		
+		encrypt("Привет");
+		decrypt(encryptMessage);
 		
 		hack();
 		
@@ -136,7 +136,7 @@ public class Main {
 	
 	private static void encrypt(String message) {
 		char[] messageChars = message.toCharArray();
-		System.out.println("Non-ecrypted message:");
+		System.out.println("Non-ecrypted message (" + message + "):");
 		for (char letter : messageChars) {
 			encryptMessage += encryptChar(letter) + ";";
 		}
@@ -162,7 +162,10 @@ public class Main {
 	}
 	
 	private static void hack() {
-		int size = 100;//(int) Math.sqrt(Math.sqrt(hackN));
+		
+		System.out.println("\nHacked");
+		
+		int size = hackN;
 		int newxj = 0;
 		int dividerN = 1;
 		
@@ -177,14 +180,13 @@ public class Main {
 		gcd[0] = 1;
 		newxj = xi[0];
 		
-		
 		for (int i = 1; i < size; i++) {
-			xi[i] = (xi[i-1]^2) - 1 % hackN;
+			xi[i] = ((xi[i-1]^2) - 1) % hackN;
 			xj[i] = newxj;
 			xixj[i] = Math.abs(xi[i] - xj[i]);
 			gcd[i] = gcd(xixj[i], hackN);
 			
-			System.out.printf("xi = %d; xj = %d; xi - xj = %d, NOD = %d\n", xi[i], xj[i], xixj[i], gcd[i]);
+			//System.out.printf("xi = %d; xj = %d; xi - xj = %d, NOD = %d\n", xi[i], xj[i], xixj[i], gcd[i]);
 			
 			if (gcd[i] > 1) {
 				dividerN = gcd[i];
@@ -192,23 +194,21 @@ public class Main {
 			}
 			
 			if (returnExp2(i + 1))
-				newxj = xi[i];
-			
+				newxj = xi[i];	
 		}
 		
-//		p = hackN / dividerN;
-//		fN = (int) ((p - 1) * (dividerN - 1));
-//		advancedEuclideanAlgorithm(fN, hackE);
-//		
-//		String[] letters = hackMessage.split(", ");
-//		
-//		for(String letter : letters) {
-//			int character = pows(Integer.parseInt(letter), d, hackN);
-//			hackedMessage += String.valueOf(character) + ";";
-//		}
-//		
-//		System.out.println(hackedMessage);
+		p = hackN / dividerN;
+		fN = (int) ((p - 1) * (dividerN - 1));
+		advancedEuclideanAlgorithm(fN, hackE);
 		
+		String[] letters = hackMessage.split(", ");
+		
+		for(String letter : letters) {
+			int character = pows(Integer.parseInt(letter), d, hackN);
+			hackedMessage += String.valueOf(character) + ";";
+		}
+		
+		System.out.println(hackedMessage);
 		
 	}
 	private static boolean returnExp2(int exp) {
@@ -217,7 +217,6 @@ public class Main {
 			if (exp / 2 != 0)
 				ext2 = false;
 			exp = (int)(exp / 2);
-			
 		}
 		return ext2;
 	}
