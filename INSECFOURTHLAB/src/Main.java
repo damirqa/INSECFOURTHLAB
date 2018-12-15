@@ -1,3 +1,4 @@
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -14,42 +15,31 @@ public class Main {
 	static String decryptMessage = "";
 	static int hackN = 96091;
 	static int hackE = 113;
-	static String hackMessage = "61768, 80113, 95437, 80113, 53070, 75177, 82879";
+	static String hackMessage = "61768;80113;95437;80113;53070;75177;82879";
 	static String hackedMessage = "";
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws UnsupportedEncodingException {
 
 		p = generate(30, 70);
 		q = generate(70, 120);
+		
 		N = p * q;
 		fN = (p - 1) * (q - 1);
 		
-		boolean eBool = false;
-		
-		do {
-			e = generate(70, N);
-			if (e != p && e != q && fN % e != 0)
-				eBool = true;
-		}while(eBool != true);
-		
-		advancedEuclideanAlgorithm(fN, e);
-		
+		e = eGenerate();
+		d = advancedEuclideanAlgorithm(fN, e);
+				
 		System.out.println("p = " + p);
 		System.out.println("q = " + q);
 		System.out.println("N = " + N);
 		System.out.println("fN = " + fN);
 		System.out.println("e = " + e);
 		System.out.println("d = " + d);
-		N = 4747;
-		e = 3889;
-		d = 3209;
 		
 		encrypt("Привет");
-		decrypt(encryptMessage);
+		decrypt(encryptMessage, decryptMessage, d, N);
 		
 		hack();
-		
-
 	}
 	
 	private static int generate(int start, int end) {
@@ -63,6 +53,17 @@ public class Main {
 		}
 		while(goodDigit != true);
 		return result;
+	}
+	
+	private static int eGenerate() {
+		boolean eBoolean = false;
+		int eDigit = 0;
+		do {
+			eDigit = generate(70, N);
+			if (eDigit != p && eDigit != q && fN % eDigit != 0)
+				eBoolean = true;
+		}while(eBoolean != true);
+		return eDigit;
 	}
 
 	
@@ -102,7 +103,7 @@ public class Main {
 		return ( mul(pows(a, b-1, m) , a, m)) % m;
 	}
 	
-	private static void advancedEuclideanAlgorithm(int A, int B) {
+	private static int advancedEuclideanAlgorithm(int A, int B) {
 		int a, b, x = 0;
 		ArrayList<Integer> adivb = new ArrayList<>();
 		
@@ -130,17 +131,17 @@ public class Main {
             y = xy[i][1];
         }
         
-        d = y < 0 ? y + fN : y;
+        return y < 0 ? y + fN : y;
         //System.out.println(x + " * " + fN + " + " + y + " * " + e + " = " + (x*fN+y*e));
 	}
 	
 	private static void encrypt(String message) {
 		char[] messageChars = message.toCharArray();
-		System.out.println("Non-ecrypted message (" + message + "):");
+		System.out.println("Ваше сообщение:'" + message + "'");
 		for (char letter : messageChars) {
 			encryptMessage += encryptChar(letter) + ";";
 		}
-		System.out.println("\nEcrypted message:\n" + encryptMessage);
+		System.out.println("\nЗашифрованное сообщение:\n" + encryptMessage);
 	}
 	
 	private static long encryptChar(char letter) {
@@ -148,22 +149,23 @@ public class Main {
 		return pows(letter, e, N);
 	}
 	
-	private static void decrypt(String message) {
+	private static void decrypt(String message, String output, int d, int N) throws UnsupportedEncodingException {
 		String[] messageChars = message.split(";");
-		System.out.println("Decrypted message:");
+		System.out.println("Расшифрованное сообщение:");
 		for (String letter : messageChars) {
-			decryptMessage += decryptChar(letter);
+			output += String.valueOf((char)decryptChar(letter, d, N));
 		}
+		System.out.println(" -> " + new String(output.getBytes("windows-1251"), "windows-1251"));
 	}
 	
-	private static char decryptChar(String letter) {
+	private static int decryptChar(String letter, int d, int N) {
 		System.out.print(pows(Integer.parseInt(letter), d, N) + ";");
-		return (char)pows(Integer.parseInt(letter), d, N);
+		return pows(Integer.parseInt(letter), d, N);
 	}
 	
-	private static void hack() {
+	private static void hack() throws UnsupportedEncodingException {
 		
-		System.out.println("\nHacked");
+		System.out.println("Взлом сообщения:");
 		
 		int size = hackN;
 		int newxj = 0;
@@ -192,24 +194,15 @@ public class Main {
 				dividerN = gcd[i];
 				break;
 			}
-			
 			if (returnExp2(i + 1))
 				newxj = xi[i];	
 		}
 		
 		p = hackN / dividerN;
 		fN = (int) ((p - 1) * (dividerN - 1));
-		advancedEuclideanAlgorithm(fN, hackE);
+		d = advancedEuclideanAlgorithm(fN, hackE);
 		
-		String[] letters = hackMessage.split(", ");
-		
-		for(String letter : letters) {
-			int character = pows(Integer.parseInt(letter), d, hackN);
-			hackedMessage += String.valueOf(character) + ";";
-		}
-		
-		System.out.println(hackedMessage);
-		
+		decrypt(hackMessage, hackedMessage, d, hackN);	
 	}
 	private static boolean returnExp2(int exp) {
 		boolean ext2 = true;
